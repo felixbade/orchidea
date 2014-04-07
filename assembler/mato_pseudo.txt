@@ -1,0 +1,65 @@
+LEVEYS = 20
+KORKEUS = 15
+
+// mato syö herkun heti ja se arvotaan uuteen paikkaan -
+// ei tarvitse arpomista kahdessa kohtaa koodia
+herkkux := LEVEYS / 2
+herkkuy := KORKEUS / 2
+
+matox := [LEVEYS / 2]
+matoy := [KORKEUS / 2]
+madonpituus := 1 // isoin pituus 255
+madonkasvu := 1 // kuinka paljon ruokaa on vatsassa
+matodx := 1
+matody := 0
+
+while true
+    // read and handle input
+    if read(up_typed)
+        matodx := 0
+        matody := -1
+    if read(down_typed)
+        matodx := 0
+        matody := 1
+    if read(right_typed)
+        matodx := 1
+        matody := 0
+    if read(left_typed)
+        matodx := -1
+        matody := 0
+    
+    // move
+    for i in [madonpituus, 1]
+        matox[i] := matox[i - 1]
+        matoy[i] := matoy[i - 1]
+    matox[0] = (matox[0] + matodx) % LEVEYS
+    matoy[0] = (matoy[0] + matody) % KORKEUS
+    piirrä(matox[1], matoy[1], madonväri)
+    piirrä(matox[0], matoy[0], madonpäänväri)
+    
+    // check death
+    for i in [1, madonpituus-1]
+        if matox[0] == matox[i] and matoy[0] == matoy[i]
+            goto gameover
+
+    // eat
+    if mato[0] == herkku
+        madonkasvu += 2
+        while herkku in mato
+            herkkux := random(0, LEVEYS - 1)
+            herkkuy := random(0, KORKEUS - 1)
+        piirrä(herkkux, herkkuy, herkunväri)
+
+    // grow
+    if madonkasvu > 0
+        madonkasvu -= 1
+        madonpituus += 1
+    else
+        piirrä(matox[-1], matoy[-1], taustanväri)
+
+    // wait
+    wait until 80ms has passed since last time
+
+
+;gameover
+// do nothing

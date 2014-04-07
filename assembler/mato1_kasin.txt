@@ -1,0 +1,277 @@
+st h 0
+st 20
+st l [herkkux]
+wr
+st l [matox]
+wr
+st 15
+st l [herkkuy]
+wr
+st l [matoy]
+wr
+st 1
+st l [madonpituus]
+wr
+st l [dx]
+wr
+st 0
+st l [madonkasvu]
+wr
+st l [dy]
+wr
+;gameloop
+st h [keyboard]
+st l [up_typed]
+rd
+jz no_up
+st h 0
+st 255
+st l [dy]
+wr
+st 0
+st l [dx]
+wr
+;no_up
+st h [keyboard]
+st l [down_typed]
+rd
+jz no_down
+st h 0
+st 1
+st l [dy]
+wr
+st 0
+st l [dx]
+wr
+;no_down
+st h [keyboard]
+st l [right_typed]
+rd
+jz no_right
+st h 0
+st 0
+st l [dy]
+wr
+st 1
+st l [dx]
+wr
+;no_right
+st h [keyboard]
+st l [left_typed]
+rd
+jz no_left
+st h 0
+st 0
+st l [dy]
+wr
+st 255
+st l [dx]
+wr
+;no_left
+st h 0
+st l [madonpituus]    
+rd
+st l [i]
+wr
+;move_loop
+st h 0
+st l [i]
+rd b
+st c 255
+al add
+st l [j]
+wr
+cp l
+st h [matox]
+rd
+st h 0
+st l [i]
+rd l
+st h [matox]
+wr
+st h 0
+st l [j]
+rd l
+st h [matoy]
+rd
+st h 0
+st l [i]
+rd l
+st h [matoy]
+wr
+st h 0
+st l [j]
+rd
+st l [i]
+wr
+cp c
+st b 1
+al div
+jz ;move_loop
+st h 0
+st l [dx]
+rd c
+st h [matox]
+st l 0
+rd b
+al add
+cp b
+st c 20
+al mod
+wr
+st h 0
+st l [dy]
+rd c
+st h [matox]
+st l 0
+rd b
+al add
+cp b
+st c 15
+al mod
+wr
+st h 0
+st l [i]
+st 1
+wr
+;death_loop
+st h 0
+st l [i]
+rd l
+st h [matox]
+rd c
+st b 255
+al mul
+cp c
+st l 0
+rd b
+al add
+st h 0
+st l [j]
+wr
+st l [i]
+rd l
+st h [matox]
+rd c
+st b 255
+al mul
+cp c
+st l 0
+rd b
+al add
+cp c
+st h 0
+st l [j]
+rd b
+al or
+jz ;gameover
+st h 0 
+st l [i]
+rd c
+st b 1
+al add
+cp b
+st l [madonpituus]
+rd c
+al div
+jz death_loop
+st h 0 
+st l [herkkux]
+rd c
+st b 255
+al mul
+cp c
+st h [matox]
+st l 0
+rd b
+al add
+st h 0
+st l [j]
+wr
+st l [herkkuy]
+rd c
+st b 255
+al mul
+cp c
+st h [matoy]
+st l 0
+rd b
+al add
+cp c
+st h 0
+st l [j]
+rd b
+al or
+jz eiruokaa
+st l [madonkasvu]
+rd c
+st b 2
+al add
+wr
+;arvo_paikka
+st h 0
+st l [i]
+st 0
+wr
+;onko_herkku_loop
+st h 0 
+st l [i]
+rd l
+st h [matox]
+rd c
+st b 255
+al mul
+cp c
+st h 0
+st l [herkkux]
+rd b
+al add
+st l [j]
+wr 
+st l [i]
+rd l
+st h [matoy]
+rd c
+st b 255
+al mul
+cp c
+st h 0
+st l [herkkuy]
+rd b
+al add
+cp c
+st l [j]
+rd b
+al or
+jz arvo_paikka
+st l [i]
+rd c
+st b 1
+al add
+wr
+cp b
+st l [madonpituus]
+rd c
+al div
+jz onko_herkku_loop
+;eiruokaa
+st h 0
+st l [madonkasvu]
+rd
+jz ei_kasva
+cp c
+st b 255
+al add
+wr
+st l [madonpituus]
+rd c
+st b 1
+al add
+wr
+st 0
+jz kasvoi
+;ei_kasva
+;kasvoi
+st 0
+jz gameloop
+;gameover

@@ -1,0 +1,96 @@
+// 68 lines
+
+herkkux, matox[0] := 20
+herkkuy, matoy[0] := 15
+madonpituus, dx := 1
+madonkasvu, dy := 0
+
+// game
+loop
+    // read and handle input
+    // up
+    if read up_typed
+        dy := -1
+        dx := 0
+    // down
+    if read down_typed
+        dy := 1
+        dx := 0
+    // right
+    if read right_typed
+        dy := 0
+        dx := 1
+    // left
+    if read left_typed
+        dy := 0
+        dx := -1
+
+    // move
+    i := madonpituus
+
+    // move body
+    loop
+        i - 1
+        j := @
+        matox[i] := matox[j]
+        matoy[i] := matoy[j]
+        i := j
+        i > 0
+
+    // move head
+    matox[0] + dx
+    @ % 20
+    matox[0] := @
+    matoy[0] + dy
+    @ % 15
+    matoy[0] := @
+
+    // TODO: piirto
+
+    // check death
+    i := 1
+    
+    loop
+        // eikoskex := matox[0] - matox[i]
+        matox[0] - matox[i]
+        j := @
+        
+        // eikoskey := matoy[0] - matoy[i]
+        matoy[0] - matoy[i]
+        j or @
+        jpz ;game_over
+        
+        // repeat if ++i < madonpituus
+        i += 1
+        @ < madonpituus
+
+    // eat
+    // mato == herkku
+    matox - herkkux
+    j := @
+    matoy - herkkuy
+    
+    // food
+    if j or @
+        madonkasvu += 2
+        ;raffle_food
+        // TODO: arpominen
+        i := 0
+        // does food overlap
+        loop
+            herkkux - matox[i]
+            j := @
+            herkkuy - matoy[i]
+            j or @
+            jpz ;raffle_food
+            i += 1
+            @ < madonpituus
+        // TODO: piirrä
+    
+    // growth
+    if read madonkasvu
+        madonkasvu -= 1
+        madonpituus += 1
+    set 0
+
+;game_over

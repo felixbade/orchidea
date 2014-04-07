@@ -1,0 +1,226 @@
+set 20
+write herkkux
+write matox
+set 15
+write herkkuy
+write matoy
+set 1
+write madonpituus
+write dx
+set 0
+write madonkasvu
+write dy
+
+;game_loop
+
+// read and handle input
+read up_typed
+jpz ;no_up
+set -1
+write dy
+set 0
+write dx
+;no_up
+
+read down_typed
+jpz ;no_down
+set 1
+write dy
+set 0
+write dx
+;no_down
+
+read right_typed
+jpz ;no_right
+set 0
+write dy
+set 1
+write dx
+;no_right
+
+read left_typed
+jpz ;no_left
+set 0
+write dy
+set -1
+write dx
+;no_left
+
+// move
+read madonpituus
+write i
+;move_loop
+
+// j = i - 1
+read b i
+set c -1
+add
+write j
+
+// matox[i] := matox[j]
+read matox[j]
+write matox[i]
+
+// matoy[i] := matoy[j]
+read matoy[j]
+write matoy[i]
+
+// i := j
+read j
+write i
+
+// repeat if i > 0
+cp c
+set b 1
+div
+jpz ;move_loop
+
+// matox[0] := (matox[0] + dx) % 20
+read c dx
+read b matox[0]
+add
+copy b
+set c 20
+mod
+wr
+
+// matoy[0] := (matoy[0] + dy) % 15
+read c dy
+read b matoy[0]
+add
+copy b
+set c 15
+mod
+wr
+
+// TODO: piirto
+
+// check death
+set 1
+write i
+;death_loop
+
+// eikoskex := matox[0] - matox[i]
+read c matox[i]
+set b -1
+mul
+cp c
+read b matox[0]
+add
+write j
+
+// eikoskey := matoy[0] - matoy[i]
+read c matoy[i]
+set b -1
+mul
+cp c
+read b matoy[0]
+add
+cp c
+
+// eikoskex or eikoskey
+read b j
+or
+jpz ;game_over
+
+// repeat if ++i < madonpituus
+read c i
+set b 1
+add
+write i
+cp b
+read c madonpituus
+div
+jpz ;death_loop
+
+// eat
+// mato == herkku
+read c herkkux
+set b -1
+mul
+cp c
+read b matox
+add
+write j
+read c herkkuy
+set b -1
+mul
+cp c
+read b matoy
+add
+cp c
+read b j
+or
+jpz ;no_food
+
+// madonkasku += 2
+read c madonkasvu
+set b 2
+add
+wr
+
+;raffle_food
+// TODO: arpominen
+set 0
+write i
+
+;does_food_overlap_loop
+// j := herkkux - matox[i]
+read c matox[i]
+set b -1
+mul
+cp c
+read b herkkux
+add
+write j
+
+// herkkuy - matoy[i]
+read c matoy[i]
+set b -1
+mul
+cp c
+read b herkkuy
+add
+cp c
+
+// repeat if x and y are 0
+read b j
+or
+jpz ;raffle_food;
+
+// i++
+read c i
+set b 1
+add
+wr
+
+// repeat if i < madonpituus
+cp b
+read c madonpituus
+div
+jpz ;does_food_overlap_loop
+
+// TODO: piirrä
+
+;no_food
+
+// grow
+read madonkasvu
+jpz ;no_growth
+cp c
+st b -1
+add
+wr
+read c madonpituus
+set b 1
+add
+wr
+set 0
+jpz ;grew
+;no_growth
+// TODO: piirrä
+;grew
+// TODO: wait
+set 0
+jpz ;game_loop
+;game_over

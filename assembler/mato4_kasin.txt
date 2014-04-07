@@ -1,0 +1,61 @@
+// 42 lines
+
+herkkux, matox[0] := 20
+herkkuy, matoy[0] := 15
+madonpituus, dx := 1
+madonkasvu, dy := 0
+
+while true
+    // read and handle input
+    if read up_typed
+        dy := -1
+        dx := 0
+    if read down_typed
+        dy := 1
+        dx := 0
+    if read right_typed
+        dy := 0
+        dx := 1
+    if read left_typed
+        dy := 0
+        dx := -1
+
+    // move body
+    i := madonpituus
+    repeat when i > 0
+        j := i - 1
+        matox[i] := matox[j]
+        matoy[y] := matoy[j]
+        i := j
+
+    // move head
+    matox[0] = (matox[0] + dx) % 20
+    matoy[0] = (matoy[0] + dy) % 15
+
+    // TODO: piirto
+    
+    // check death
+    i := 1
+    repeat when i < madonpituus
+        if matox[0] == matox[i] and matoy[i] == matoy[i]
+            goto gameover
+        i++
+
+    // eat
+    if matox == herkkux and matoy == herkkuy
+        madonkasvu += 2
+        label raffle_food
+        // TODO: arpominen
+        i := 0
+        repeat when i < madonpituus
+            if herkkux == matox[i] and herkkuy == matoy[i]
+                goto raffle_food
+            i++
+        // TODO: piirto
+
+    // grow
+    if madonkasvu
+        madonkasvu--
+        madonpituus++
+
+label gameover
